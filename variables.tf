@@ -4,5 +4,5 @@
 variable region {
   type        = string
   default     = ""
-  description = "description"
+  description = "AWS Region Account"
 }

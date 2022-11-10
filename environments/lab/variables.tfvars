@@ -8,6 +8,7 @@ region = "us-east-1"
 ### AWS VPC ###
 cidr_blocks = "10.170.192.0/18"
 
+
 ### Tags ###
 tags = {
     Project         = "EKS Networking "

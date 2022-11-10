@@ -59,17 +59,3 @@ jobs:
 
 
 
-
-
-
-      - name: Run Terraform Plan
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secretS.AWS_SECRET_ACCESS_KEY }}
-        run: terraform plan --var-file="environments/lab/variables.tfvars"
-
-      - name: Run Terraform apply
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secretS.AWS_SECRET_ACCESS_KEY }}
-        run: terraform apply --var-file="environments/lab/variables.tfvars" -auto-approve

@@ -8,12 +8,12 @@ region = "us-west-1"
 ### AWS VPC ###
 cidr_blocks = "10.170.192.0/18"
 
-### Tags ###
+
 ### Tags ###
 tags = {
     Resource                        = "Networking "
     ResourceName                    = "lab-eks"
-    Environment                     = "Local" 
+    Environment                     = "Lab" 
     Terraform                       = true
     Owner                           = "Digital Architecture"
     kubernetes.io/cluster/lab-eks	= "shared"

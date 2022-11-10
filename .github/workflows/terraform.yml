@@ -1,55 +1,61 @@
-name: Terraform Test with localstack
+name: Terraform 
 
-on:
-  push:
-    branchs:
-    - develop
-    branches-ignore:
-      - "main"
+on: [pull_request]
 
 jobs:
 
-  terraform-validate:
+  terraform: 
     runs-on: ubuntu-latest
+    env:
+      stack: lab
+
     steps:
-      - name: Checkout Branch
+
+      - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Run terraform validate
-        run: |
-          terraform init
-          terraform workspace new local
-          terraform workspace list
-          terraform validate
-
-  terraform-apply:
-    runs-on: ubuntu-latest
-    needs: terraform-validate
-    steps:
-      - name: Checkout Branch
-        uses: actions/checkout@v2
-
-      - name: asdf_install
-        uses: asdf-vm/actions/install@v1
       
-      - name: Start Localstack
-        run: |
-          python3 -m pip install localstack awscli pyOpenSSL cryptography
-          docker pull localstack/localstack
-          localstack start -d
-          echo "Waiting for LocalStack startup..."
-          localstack wait -t 60
-          docker ps -a 
-          echo "Startup Complete"
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          AWS_REGION: ${{ secrets.AWS_REGION}}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       
-      - name: Run Terraform Plan
-        run: |
-          terraform init
-          terraform workspace new local
-          terraform workspace list
-          terraform plan --var-file="environments/local/variables.tfvars"
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate -no-color
       
-      - name: Run Terraform apply
-        run: |
-          terraform init
-          terraform apply --var-file="environments/local/variables.tfvars" -auto-approve
+      - name: Create Terraform Workspace
+        id: create_workspace
+        run: terraform workspace new ${{ env.stack }}
+        continue-on-error: true
+      
+      - name: Terraform Workspace Select
+        id: select_workspace
+        run: terraform workspace select ${{ env.stack }}
+
+       - name: Terraform Plan
+        id: plan
+        run: terraform plan -var-file="environments/$(cat .terraform/environment)/variables.tfvars" -no-color
+        continue-on-error: true
+      
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+      
+      - name: Terraform Apply
+        environment: 'lab'
+        run: terraform apply -var-file="environments/$(cat .terraform/environment)/variables.tfvars" -auto-approve
+
+
+
+
+
+
+
+

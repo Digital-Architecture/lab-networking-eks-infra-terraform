@@ -5,7 +5,7 @@
 ### VPC ###
 module "vpc-eks" {
 
-    source                          = "git::https://github.com/Digital-Architecture/terraform-modules-aws-networking.git//vpc?ref=v.0.0.1"
+    source                          = "git::https://github.com/Digital-Architecture/terraform-modules-aws-networking.git//vpc?ref=v.0.0.2"
 
     cidr_blocks                     = var.cidr_blocks
     instace_tenacy                  = "default"

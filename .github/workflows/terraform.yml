@@ -12,6 +12,7 @@ on:
 jobs:
 
   validate: 
+    if: contains('refs/heads/develop', github.ref)
     runs-on: ubuntu-latest
     env:
       stack: lab
@@ -37,6 +38,7 @@ jobs:
         run: terraform validate -no-color
       
   plan:
+    if: contains('refs/heads/develop', github.ref)
     needs: validate
     runs-on: ubuntu-latest
     env:
@@ -68,7 +70,7 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: exit 1
 
-  apply:
+  deploy:
     needs: plan
     if: contains('refs/heads/main', github.ref)
     runs-on: ubuntu-latest

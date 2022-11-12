@@ -12,7 +12,7 @@ variable region {
 
 ### VPC ###
 
-variable "cidr_blocks" {
+variable "cidr_block" {
 
   description = "The CIDR Blocks the VPC."
   type        = string

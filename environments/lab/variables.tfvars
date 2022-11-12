@@ -6,7 +6,7 @@
 region = "us-west-1"
 
 ### AWS VPC ###
-cidr_blocks = "10.170.192.0/18"
+cidr_block = "10.170.192.0/18"
 
 
 ### Tags ###
@@ -16,7 +16,7 @@ tags = {
     Environment                     = "Lab" 
     Terraform                       = true
     Owner                           = "Digital Architecture"
-    kubernetes.io/cluster/lab-eks	= "shared"
+    "kubernetes.io/cluster/lab-eks"	= "shared"
 }
 
 tags_vpc = {

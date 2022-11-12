@@ -1,57 +1,102 @@
 name: Terraform 
 
-on: [pull_request]
+on:
+  push:
+    branches:
+    - develop
+  pull_request:
+    branches:
+    - main
+  
 
 jobs:
 
-  terraform: 
+  validate: 
+    if: contains('refs/heads/develop', github.ref)
     runs-on: ubuntu-latest
-    environment: lab
     env:
       stack: lab
-
     steps:
 
-      - name: Checkout
-        uses: actions/checkout@v2
-      
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+      - uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v1
 
       - name: AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          AWS_REGION: ${{ secrets.AWS_REGION}}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION}}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       
       - name: Terraform Init
-        run: terraform init
+        run: | 
+          terraform init
+          terraform workspace new ${{ env.stack }}
+        continue-on-error: true
 
       - name: Terraform Validate
         run: terraform validate -no-color
       
-      - name: Create Terraform Workspace
-        id: create_workspace
-        run: terraform workspace new ${{ env.stack }}
-        continue-on-error: true
-      
-      - name: Terraform Workspace Select
-        id: select_workspace
-        run: terraform workspace select ${{ env.stack }}
+  plan:
+    if: contains('refs/heads/develop', github.ref)
+    needs: validate
+    runs-on: ubuntu-latest
+    env:
+      stack: lab
+    steps:
 
+      - uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v1
+      
+      - name: AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ secrets.AWS_REGION}}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      
+      - name: Terraform Init
+        run: | 
+          terraform init
+          terraform workspace new ${{ env.stack }}
+        continue-on-error: true
+        
       - name: Terraform Plan
         id: plan
-        run: terraform plan -var-file="environments/$(cat .terraform/environment)/variables.tfvars" -no-color
+        run: terraform plan -var-file="environments/${{ env.stack }}/variables.tfvars" -no-color
         continue-on-error: true
-      
+
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
+
+  deploy:
+    needs: plan
+    if: contains('refs/heads/main', github.ref)
+    runs-on: ubuntu-latest
+    environment: 'Lab'
+    env:
+      stack: lab
+    steps:
+
+      - uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v1
       
+      - name: AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ secrets.AWS_REGION}}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      
+      - name: Terraform Init
+        run: | 
+          terraform init
+          terraform workspace new ${{ env.stack }}
+        continue-on-error: true
+
       - name: Terraform Apply
-        environment: 'lab'
-        run: terraform apply -var-file="environments/$(cat .terraform/environment)/variables.tfvars" -auto-approve
+        run: terraform apply -var-file="environments/${{ env.stack }}/variables.tfvars" -auto-approve
 
 
 

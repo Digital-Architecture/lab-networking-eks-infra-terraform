@@ -2,8 +2,8 @@ name: Terraform Test with localstack
 
 on:
   push:
-    branchs:
-    - develop
+    branches:
+      - "local"
     branches-ignore:
       - "main"
 

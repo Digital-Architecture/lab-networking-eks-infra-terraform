@@ -5,10 +5,10 @@
 ### VPC ###
 module "vpc-eks" {
 
-    source                          = "git::https://github.com/Digital-Architecture/terraform-modules-aws-networking.git//vpc?ref=v.0.0.2"
+    source                          = "git::https://github.com/Digital-Architecture/terraform-modules-aws-networking.git//vpc?ref=v.0.0.5"
 
-    cidr_blocks                     = var.cidr_blocks
-    instace_tenacy                  = "default"
+    cidr_block                      = var.cidr_block
+    instance_tenancy                = "default"
     enable_dns_hostnames            = true
     enable_dns_support              = true
     enable_classiclink              = false

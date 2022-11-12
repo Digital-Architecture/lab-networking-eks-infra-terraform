@@ -70,6 +70,7 @@ jobs:
 
   apply:
     needs: plan
+    if: contains('refs/heads/main', github.ref)
     runs-on: ubuntu-latest
     environment: 'Lab'
     env:
@@ -80,7 +81,6 @@ jobs:
       - uses: hashicorp/setup-terraform@v1
       
       - name: AWS Credentials
-        if: contains('refs/heads/main', github.ref)
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: ${{ secrets.AWS_REGION}}
@@ -88,14 +88,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       
       - name: Terraform Init
-        if: contains('refs/heads/main', github.ref)
         run: | 
           terraform init
           terraform workspace new ${{ env.stack }}
         continue-on-error: true
 
       - name: Terraform Apply
-        if: contains('refs/heads/main', github.ref)
         run: terraform apply -var-file="environments/${{ env.stack }}/variables.tfvars" -auto-approve
 
 

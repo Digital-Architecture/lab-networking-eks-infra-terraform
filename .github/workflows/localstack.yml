@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - "local"
-    branches-ignore:
-      - "main"
 
 jobs:
 

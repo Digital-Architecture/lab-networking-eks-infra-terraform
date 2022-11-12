@@ -54,7 +54,9 @@ RUN curl --silent --location "https://github.com/weaveworks/eksctl/releases/late
      mv /tmp/eksctl /usr/local/bin && \
      chmod +x /usr/local/bin/eksctl
 
-RUN useradd -ms /bin/bash appuser
+#RUN useradd -ms /bin/bash appuser
+
+#RUN chown -R appuser:appuser /app
 
 #ADD .bashrc /home/appuser/.bashrc
 
@@ -64,8 +66,8 @@ RUN useradd -ms /bin/bash appuser
 
 #RUN chown -R appuser:appuser /home/appuser/.kube
 
-USER appuser
+#USER appuser
 
 RUN mkdir ~/.aws/ && cd ~/.aws && touch config && touch credentials
 
-RUN export AWS_SHARED_CREDENTIALS_FILE=~/.aws/credentials && export AWS_PROFILE=da-engineer && export AWS_REGION=us-east-1
+RUN export AWS_SHARED_CREDENTIALS_FILE=~/.aws/credentials && export AWS_PROFILE=default && export AWS_REGION=us-west-1

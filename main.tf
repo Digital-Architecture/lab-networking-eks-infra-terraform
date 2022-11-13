@@ -28,7 +28,18 @@ module "internet-gateway" {
     tags                    = var.tags
 }
 
-### Subnets ###
+### Subnet Private and Subnet Public ###
+
+module "subnet_private" {
+
+    source                  = "git::https://github.com/Digital-Architecture/terraform-modules-aws-networking.git//subnet_private"
+
+    vpc_id                  = module.vpc-eks.vpc-id
+    subnet_private          = var.subnet_private
+    map_public_ip_on_launch = false
+    tags                    = var.tags
+}
+
 
 module "subnet_public" {
 

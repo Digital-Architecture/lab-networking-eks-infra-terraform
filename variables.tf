@@ -19,7 +19,20 @@ variable "cidr_block" {
   
 }
 
-### Subnets ###
+
+### Subnet Private and Subnet Public ###
+variable "subnet_private" {
+
+    type = map(object({
+        az                  = string
+        subnet_id           = string
+        name_subnet         = string
+        name_route_table    = string
+        name_elastic_ip    = string
+        name_nat_gateway    = string 
+    }))
+}
+
 variable "subnet_public" {
 
     type = map(object({
@@ -29,6 +42,8 @@ variable "subnet_public" {
         name_route_table    = string 
     }))
 }
+
+
 
 
 ### Tags ###

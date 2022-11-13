@@ -19,7 +19,18 @@ variable "cidr_block" {
   
 }
 
-### Tags ###
+### Subnets ###
+variable "subnet_public" {
 
+    type = map(object({
+        az                  = string
+        subnet_id           = string
+        name_subnet         = string
+        name_route_table    = string 
+    }))
+}
+
+
+### Tags ###
 variable "tags" {}
 variable "tags_vpc" {}

@@ -1,8 +1,8 @@
 # NTTDATA - DIGITAL ARCHITECTURE
-# Create: Marcos Cianci - mlopesci@emeal.nttdata.com
+# Create: Marcos Cianci
 
 
-### VPC ###
+### AWS VPC ###
 module "vpc-eks" {
 
     source                          = "git::https://github.com/Digital-Architecture/terraform-modules-aws-networking.git//vpc"
@@ -18,7 +18,7 @@ module "vpc-eks" {
     tags_vpc                        = var.tags_vpc
 }
 
-### Internet Gateway ###
+### AWS Internet Gateway ###
 module "internet-gateway" {
 
     source                  = "git::https://github.com/Digital-Architecture/terraform-modules-aws-networking.git//internet_gateway"
@@ -28,7 +28,17 @@ module "internet-gateway" {
     tags                    = var.tags
 }
 
-### Subnets ###
+### AWS Subnet Private, Subnet Public, AWS NAT Gateway and AWS Route Table ###
+module "subnet_private" {
+
+    source                  = "git::https://github.com/Digital-Architecture/terraform-modules-aws-networking.git//subnet_private"
+
+    vpc_id                  = module.vpc-eks.vpc-id
+    subnet_private          = var.subnet_private
+    map_public_ip_on_launch = false
+    tags                    = var.tags
+}
+
 
 module "subnet_public" {
 
@@ -39,3 +49,21 @@ module "subnet_public" {
     map_public_ip_on_launch = false
     tags                    = var.tags
 }
+
+### AWS Routes ###
+module "route-public" {
+
+    source = "git::https://github.com/Digital-Architecture/terraform-modules-aws-networking.git//route/internet_gateway"
+
+    route_internet_gateway = var.route_internet_gateway
+}
+
+
+module "route-private" {
+
+    source = "git::https://github.com/Digital-Architecture/terraform-modules-aws-networking.git//route/nat_gateway"
+
+    route_nat_gateway = var.route_nat_gateway
+}
+
+

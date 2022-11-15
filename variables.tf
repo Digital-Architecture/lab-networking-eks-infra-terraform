@@ -1,5 +1,5 @@
 # NTTDATA - DIGITAL ARCHITECTURE
-# Create: Marcos Cianci - mlopesci@emeal.nttdata.com
+# Create: Marcos Cianci
 
 
 ### Global Variables ###
@@ -19,7 +19,20 @@ variable "cidr_block" {
   
 }
 
-### Subnets ###
+
+### Subnet Private and Subnet Public ###
+variable "subnet_private" {
+
+    type = map(object({
+        az                  = string
+        subnet_id           = string
+        name_subnet         = string
+        name_route_table    = string
+        name_elastic_ip    = string
+        name_nat_gateway    = string 
+    }))
+}
+
 variable "subnet_public" {
 
     type = map(object({
@@ -30,6 +43,27 @@ variable "subnet_public" {
     }))
 }
 
+### AWS Route ###
+
+variable "route_internet_gateway" {
+
+  type = map(object({
+    route_table_id          = string
+    destination_cidr_block  = string
+    gateway_id              = string
+  }))
+}
+
+
+variable "route_nat_gateway" {
+
+  type = map(object({
+    route_table_id          = string
+    destination_cidr_block  = string
+    nat_gateway_id              = string
+  }))
+  
+}
 
 ### Tags ###
 variable "tags" {}

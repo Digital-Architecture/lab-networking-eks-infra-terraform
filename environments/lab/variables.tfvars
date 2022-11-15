@@ -45,6 +45,37 @@ subnet_public = {
     }
 }
 
+### AWS Route ###
+
+route_internet_gateway = {
+    route_one = {
+        route_table_id          = "rtb-04707d881580a85b0"
+        destination_cidr_block  = "0.0.0.0/0"
+        gateway_id              = "igw-067d35eadec6297d2"
+    },
+    route_two = {
+        route_table_id          = "rtb-09748b63b5657d39d"
+        destination_cidr_block  = "0.0.0.0/0"
+        gateway_id              = "igw-067d35eadec6297d2"	
+    }
+}
+
+route_nat_gateway = {
+    route_one = {
+        route_table_id          = "rtb-0caa58d800cb89ac4"
+        destination_cidr_block  = "0.0.0.0/0"
+        nat_gateway_id          = "nat-0741407334ef50ab7"
+    },
+    route_two = {
+        route_table_id          = "rtb-04707d881580a85b0"
+        destination_cidr_block  = "0.0.0.0/0"
+        nat_gateway_id          = "nat-031aa7d5ec022bf8d"
+    }
+}
+
+
+
+
 ### Tags ###
 tags = {
     Resource                        = "Networking "

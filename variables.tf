@@ -1,5 +1,5 @@
 # NTTDATA - DIGITAL ARCHITECTURE
-# Create: Marcos Cianci - mlopesci@emeal.nttdata.com
+# Create: Marcos Cianci
 
 
 ### Global Variables ###
@@ -43,8 +43,27 @@ variable "subnet_public" {
     }))
 }
 
+### AWS Route ###
+
+variable "route_internet_gateway" {
+
+  type = map(object({
+    route_table_id          = string
+    destination_cidr_block  = string
+    gateway_id              = string
+  }))
+}
 
 
+variable "route_nat_gateway" {
+
+  type = map(object({
+    route_table_id          = string
+    destination_cidr_block  = string
+    nat_gateway_id              = string
+  }))
+  
+}
 
 ### Tags ###
 variable "tags" {}
